@@ -1,0 +1,1 @@
+# macau_rpg_map_v1.2.06

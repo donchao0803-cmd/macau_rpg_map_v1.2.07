@@ -309,7 +309,7 @@
             ctx.globalCompositeOperation = 'source-over';
         }
 
-        map.on('move', drawFog);
+        map.on('moveend', drawFog);
         map.on('zoomend', drawFog);
 
         // Overpass API 街區雷達

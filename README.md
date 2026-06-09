@@ -1,1 +1,3 @@
-# macau_rpg_map_v1.2.07
+# Macau RPG Map branch 2
+v1.2.12
+Add history search

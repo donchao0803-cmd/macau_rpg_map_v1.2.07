@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RPG 澳門實境探索地圖 v1.3.1</title>
+    <title>RPG 澳門實境探索地圖 v1.3.3</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
@@ -519,7 +519,7 @@
     </div>
 
     <div id="bottom-info-bar">
-        <div class="info-title" id="bar-title">🗺️ 澳門探索地圖 (v1.3.1) 📸</div>
+        <div class="info-title" id="bar-title">🗺️ 澳門探索地圖 (v1.3.3) 📸</div>
         <div class="info-coords" id="gps-status">定位中...</div>
     </div>
 
@@ -730,18 +730,32 @@
                             let nameZH = element.tags['name:zh'] || element.tags['name:zh_tw'] || element.tags['name:zh-TW'] || element.tags['name'];
                             let namePT = element.tags['name:pt'] || element.tags['official_name:pt'] || element.tags['official_name'];
 
-                            // ⚡ v1.3.2 Bug修復核心：防呆清洗 OSM 之中葡文混雜資料
-                            if (nameZH && (nameZH.includes('/') || nameZH.includes(' '))) {
-                                const separator = nameZH.includes('/') ? '/' : ' ';
-                                const parts = nameZH.split(separator);
-                                let partA = parts[0].trim();
-                                let partB = parts[1].trim();
-                                
-                                // 如果前半段是中文，後半段是純英葡文，進行強制拆分歸位
-                                if (isChinese(partA) && !isChinese(partB)) {
-                                    nameZH = partA;
-                                    if (!namePT || namePT === "Macau") {
-                                        namePT = partB;
+                            // ⚡ v1.3.3 Bug修復核心：完美相容 /、- 以及空格分隔，且首空格切分不閹割葡文
+                            if (nameZH) {
+                                let separator = "";
+                                if (nameZH.includes('/')) separator = '/';
+                                else if (nameZH.includes(' - ')) separator = ' - ';
+                                else if (nameZH.includes(' ')) separator = ' ';
+
+                                if (separator !== "") {
+                                    let partA = "";
+                                    let partB = "";
+
+                                    if (separator === ' ') {
+                                        const firstSpaceIndex = nameZH.indexOf(' ');
+                                        partA = nameZH.substring(0, firstSpaceIndex).trim();
+                                        partB = nameZH.substring(firstSpaceIndex + 1).trim();
+                                    } else {
+                                        const parts = nameZH.split(separator);
+                                        partA = parts[0].trim();
+                                        partB = parts[1].trim();
+                                    }
+                                    
+                                    if (isChinese(partA) && !isChinese(partB)) {
+                                        nameZH = partA;
+                                        if (!namePT || namePT === "Macau") {
+                                            namePT = partB;
+                                        }
                                     }
                                 }
                             }
@@ -1030,7 +1044,7 @@
             }
             const saveData = {
                 gameIdentity: "Macau-Fog-Map-RPG",
-                version: "1.3.1",
+                version: "1.3.3",
                 downloadTimestamp: new Date().toISOString(),
                 lastLocation: [currentLat, currentLng],
                 exploredPaths: unlockedPaths,

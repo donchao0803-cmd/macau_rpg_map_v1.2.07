@@ -354,9 +354,6 @@
             outline: none;
             cursor: pointer;
         }
-        .filter-select:focus {
-            border-color: #4CAF50;
-        }
 
         .sort-toggle-btn {
             background: #265dad;
@@ -593,7 +590,7 @@
             <input type="text" id="footprint-search" class="search-input" placeholder="🔍 輸入中文或葡文路名搜尋..." oninput="renderFootprintList()">
             
             <select id="footprint-filter-type" class="filter-select" onchange="renderFootprintList()">
-                <option value="ALL">📋 道路種類</option>
+                <option value="ALL">📋所有道路種類</option>
                 <option value="AVENIDA">🔴大馬路 (Avenida)</option>
                 <option value="RUA">🟠街 (Rua)</option>
                 <option value="OTHER">🟡其他</option>

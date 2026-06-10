@@ -708,7 +708,7 @@
             drawFog();
         }
 
-        async function updateStreetOverpass(lat, lng) {
+		async function updateStreetOverpass(lat, lng) {
             const currentTime = Date.now();
             if (currentTime - lastApiRequestTime < 4000) return; 
             lastApiRequestTime = currentTime;
@@ -727,15 +727,30 @@
                 if (data && data.elements) {
                     data.elements.forEach(element => {
                         if (element.tags) {
-                            const nameZH = element.tags['name:zh'] || element.tags['name:zh_tw'] || element.tags['name:zh-TW'] || element.tags['name'];
-                            const namePT = element.tags['name:pt'] || element.tags['official_name:pt'] || element.tags['official_name'];
+                            let nameZH = element.tags['name:zh'] || element.tags['name:zh_tw'] || element.tags['name:zh-TW'] || element.tags['name'];
+                            let namePT = element.tags['name:pt'] || element.tags['official_name:pt'] || element.tags['official_name'];
+
+                            // ⚡ v1.3.2 Bug修復核心：防呆清洗 OSM 之中葡文混雜資料
+                            if (nameZH && (nameZH.includes('/') || nameZH.includes(' - '))) {
+                                const separator = nameZH.includes('/') ? '/' : ' - ';
+                                const parts = nameZH.split(separator);
+                                let partA = parts[0].trim();
+                                let partB = parts[1].trim();
+                                
+                                // 如果前半段是中文，後半段是純英葡文，進行強制拆分歸位
+                                if (isChinese(partA) && !isChinese(partB)) {
+                                    nameZH = partA;
+                                    if (!namePT || namePT === "Macau") {
+                                        namePT = partB;
+                                    }
+                                }
+                            }
 
                             if (nameZH && !streetZHs.includes(nameZH) && isChinese(nameZH)) streetZHs.push(nameZH);
                             if (namePT && !streetPTs.includes(namePT) && !isChinese(namePT)) streetPTs.push(namePT);
                             
                             if(nameZH && namePT && isChinese(nameZH) && !isChinese(namePT)) {
                                 if(!newStreetPairs.some(p => p.zh === nameZH)) {
-                                    // 🌟 v1.3.1 微調：在此處僅先建立對應，時間戳記會在寫入圖鑑時即時產生
                                     newStreetPairs.push({ zh: nameZH, pt: namePT, lat: lat, lng: lng });
                                 }
                             }

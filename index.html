@@ -1084,7 +1084,7 @@
                 }
                                
                 if (filterType === "ESTRADA") {
-                    return zhName.endsWith("馬路") || zhName.endsWith("公路") || ptName.startsWith("estrada");
+                    return zhName.endsWith("公路") || ptName.startsWith("estrada");
                 }
                 
                 if (filterType === "CAMINHO") {
@@ -1137,7 +1137,7 @@
                 
                 if (filterType === "OTHER") {
                     const isAvenida = zhName.endsWith("大馬路") || ptName.startsWith("avenida");
-                    const isEstrada = zhName.endsWith("馬路") || zhName.endsWith("公路") || ptName.startsWith("estrada");
+                    const isEstrada = zhName.endsWith("公路") || ptName.startsWith("estrada");
                     const isCaminho = ptName.startsWith("caminho")
                     const isRampa = zhName.endsWith("斜路") || zhName.endsWith("斜坡") || ptName.startsWith("rampa")
                     const isRua = zhName.endsWith("街") || ptName.startsWith("rua")
